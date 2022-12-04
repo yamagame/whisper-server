@@ -12,7 +12,7 @@ function main({ host, port }: { host: string; port: number }) {
 
     //. サーバーからメッセージを受信したら、その内容を表示する
     client.on("data", function (data) {
-      console.log(`[${data.toString()}]`);
+      console.log(`${data.toString()}`);
     });
 
     client.on("error", function (err) {

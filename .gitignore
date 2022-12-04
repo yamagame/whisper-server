@@ -2,3 +2,5 @@
 /whisper/*
 !/whisper/.gitkeep
 .DS_Store
+*.log
+/build

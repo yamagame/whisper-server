@@ -18,25 +18,29 @@ function main({ port, cmd }: { port: number; cmd: string }) {
   const server = net
     .createServer(function (conn) {
       console.log("server-> tcp server created");
+      let timeout: NodeJS.Timeout;
       const event = new EventEmitter();
       events.push(event);
       event.on("data", function (data) {
         const msg = data.toString();
         const a = data.toString().split("\r");
         if (a.length > 2) {
-          let data = a[2];
-          const m = msg.match(/\(.+\)(.*)/);
-          if (m) {
-            if (m[2]) {
-              data = m[2].trim();
-            } else {
-              data = "";
-            }
-          }
-          if (data.indexOf("お前は") >= 0 || data == "") {
+          data = a[2];
+        }
+        const m = msg.match(/\(.+\)(.*)/);
+        if (m) {
+          if (m[1]) {
+            data = m[1].trim();
           } else {
-            conn.write(data.trim());
+            data = "";
           }
+        }
+        if (data.indexOf(":") >= 0 || data.indexOf("お前は") >= 0 || data == "") {
+        } else {
+          if (timeout) clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            conn.write(data.trim());
+          }, 1000);
         }
       });
       conn.on("data", function (data) {
