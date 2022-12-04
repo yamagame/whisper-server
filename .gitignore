@@ -1,0 +1,4 @@
+/node_modules
+/whisper/*
+!/whisper/.gitkeep
+.DS_Store
