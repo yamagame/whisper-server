@@ -7,7 +7,9 @@
     "start": "yarn build:live",
     "build": "tsc -p .",
     "build:live": "nodemon --watch 'src/server/**/*.ts' --exec \"ts-node\" src/server/index.ts",
-    "client": "nodemon --watch 'src/client/**/*.ts' --exec \"ts-node\" src/client/index.ts"
+    "server": "nodemon --watch 'src/server/**/*.ts' --exec \"ts-node\" src/server/index.ts",
+    "client": "nodemon --watch 'src/client/**/*.ts' --exec \"ts-node\" src/client/index.ts",
+    "proxy": "nodemon --watch 'src/proxy/**/*.ts' --exec \"ts-node\" src/proxy/index.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
