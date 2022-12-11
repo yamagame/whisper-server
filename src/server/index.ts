@@ -18,7 +18,7 @@ function main({ port, cmd }: { port: number; cmd: string }) {
   const server = net
     .createServer(function (conn) {
       console.log("server-> tcp server created");
-      let timeout: NodeJS.Timeout;
+      // let timeout: NodeJS.Timeout;
       const event = new EventEmitter();
       events.push(event);
       event.on("data", function (data) {
@@ -35,12 +35,12 @@ function main({ port, cmd }: { port: number; cmd: string }) {
             data = "";
           }
         }
-        if (data.indexOf(":") >= 0 || data.indexOf("お前は") >= 0 || data == "") {
+        if (data.indexOf(":") >= 0 || data == "") {
         } else {
-          if (timeout) clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            conn.write(data.trim());
-          }, 1000);
+          // if (timeout) clearTimeout(timeout);
+          // timeout = setTimeout(() => {
+          conn.write(data.trim());
+          // }, 1000);
         }
       });
       conn.on("data", function (data) {
@@ -55,6 +55,9 @@ function main({ port, cmd }: { port: number; cmd: string }) {
         };
         removeEvent(event);
       });
+      conn.on("error", function (err) {
+        console.log(err);
+      });
     })
     .listen(port);
 
@@ -62,7 +65,7 @@ function main({ port, cmd }: { port: number; cmd: string }) {
 }
 
 if (require.main === module) {
-  const PORT = parseInt(process.env["PORT"] || "42001");
-  const WHISPER = process.env["WHISPER"] || "./whisper-test.sh";
+  const PORT = parseInt(process.env["PORT"] || "42002");
+  const WHISPER = process.env["WHISPER_COMMAND"] || "./whisper-test.sh";
   main({ port: PORT, cmd: WHISPER });
 }

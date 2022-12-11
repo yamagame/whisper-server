@@ -1,11 +1,11 @@
 import net from "net";
 
-function main({ host, port }: { host: string; port: number }) {
+function main({ serverHost, serverPort }: { serverHost: string; serverPort: number }) {
   const connect = () => {
     //. 接続
     const client = new net.Socket();
-    client.connect(port, host, function () {
-      console.log(`[接続:${host}:${port}]`);
+    client.connect(serverPort, serverHost, function () {
+      console.log(`[接続:${serverPort}:${serverPort}]`);
       //. サーバーへメッセージを送信
       client.write("Hello");
     });
@@ -16,12 +16,13 @@ function main({ host, port }: { host: string; port: number }) {
     });
 
     client.on("error", function (err) {
-      console.log(err);
+      console.log("serverに接続できません " + serverHost + ", port " + serverPort);
+      // console.log(err);
     });
 
     //. 接続が切断されたら、その旨をメッセージで表示する
     client.on("close", function () {
-      console.log("切断");
+      console.log("[切断]");
       // 再接続
       setTimeout(() => {
         connect();
@@ -34,5 +35,5 @@ function main({ host, port }: { host: string; port: number }) {
 if (require.main === module) {
   const SERVER_HOST = process.env["SERVER_HOST"] || "localhost";
   const SERVER_PORT = parseInt(process.env["SERVER_PORT"] || "42001");
-  main({ host: SERVER_HOST, port: SERVER_PORT });
+  main({ serverHost: SERVER_HOST, serverPort: SERVER_PORT });
 }
