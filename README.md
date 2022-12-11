@@ -32,3 +32,7 @@ $ WHISPER_HOST=localhost ./scripts/client.sh
 ```bash
 $ ./scripts/proxy.sh
 ```
+
+## LICENSE
+
+MIT
