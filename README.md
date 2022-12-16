@@ -21,12 +21,12 @@ whisper ディレクトリに stream と ggml-base.bin を配置、以下のコ�
 
 ```bash
 # サーバーの起動
-$ WHISPER_COMMAND=./whisper.sh ./scripts/server.sh
+$ WHISPER_COMMAND=./whisper.sh PORT=42001 ./scripts/server.sh
 ```
 
 ```bash
 # クライアントの起動
-$ WHISPER_HOST=localhost ./scripts/client.sh
+$ SERVER_HOST=localhost ./scripts/client.sh
 ```
 
 ```bash
