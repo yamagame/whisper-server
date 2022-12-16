@@ -39,7 +39,9 @@ function main({ port, cmd }: { port: number; cmd: string }) {
         } else {
           // if (timeout) clearTimeout(timeout);
           // timeout = setTimeout(() => {
-          conn.write(data.trim());
+          if (data.split("、").length < 3) {
+            conn.write(data.trim());
+          }
           // }, 1000);
         }
       });
