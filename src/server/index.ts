@@ -36,6 +36,11 @@ function main({ port, cmd }: { port: number; cmd: string }) {
     });
   });
 
+  whisper.stderr.on("data", (data) => {
+    const msg = data.toString().trim();
+    console.log(msg);
+  });
+
   const server = net
     .createServer(function (conn) {
       console.log("server-> tcp server created");
