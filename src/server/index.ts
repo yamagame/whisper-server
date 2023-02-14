@@ -1,6 +1,27 @@
 import net from "net";
 import { spawn } from "child_process";
 import EventEmitter from "events";
+import psTree from "ps-tree";
+
+const ignore = [
+  "おはようございます。",
+  "ご視聴ありがとうございました",
+  "んーーー",
+  "お前は",
+  "この動画",
+  "スタッフの方が良いです。",
+  "今までの動画を",
+  "んんん",
+  "スッッッッ",
+  "スタッフの",
+  "【",
+  "1.",
+  "-",
+];
+
+const SIGCONT = 18;
+const SIGSTOP = 19;
+const SIGTSTP = 20;
 
 function main({ port, cmd }: { port: number; cmd: string }) {
   const events: EventEmitter[] = [];
@@ -35,7 +56,12 @@ function main({ port, cmd }: { port: number; cmd: string }) {
             data = "";
           }
         }
-        if (data.indexOf(":") >= 0 || data == "") {
+        if (
+          data.indexOf(":") >= 0 ||
+          data == "" ||
+          ignore.some((v) => data.indexOf(v) >= 0) ||
+          data.length > 30
+        ) {
         } else {
           // if (timeout) clearTimeout(timeout);
           // timeout = setTimeout(() => {
@@ -47,7 +73,30 @@ function main({ port, cmd }: { port: number; cmd: string }) {
       });
       conn.on("data", function (data) {
         console.log("server-> " + data + " from " + conn.remoteAddress + ":" + conn.remotePort);
+        const msg = data.toString();
         conn.write(`[接続:${data.toString().trim()}]`);
+        if (whisper && whisper.pid) {
+          if (msg === "<<<stop>>>") {
+            console.log(msg);
+            console.log(whisper.pid);
+            psTree(whisper.pid, (err, children) => {
+              children.forEach((v) => {
+                console.log(">", v.PID);
+                process.kill(parseInt(v.PID), "SIGSTOP");
+              });
+            });
+          }
+          if (msg === "<<<start>>>") {
+            console.log(msg);
+            console.log(whisper.pid);
+            psTree(whisper.pid, (err, children) => {
+              children.forEach((v) => {
+                console.log(">", v.PID);
+                process.kill(parseInt(v.PID), "SIGCONT");
+              });
+            });
+          }
+        }
       });
       conn.on("close", function () {
         console.log("server-> client closed connection");
